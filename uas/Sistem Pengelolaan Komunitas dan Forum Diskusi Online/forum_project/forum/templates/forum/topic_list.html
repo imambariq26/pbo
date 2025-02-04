@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Topik di {{ category.name }}</title>
+</head>
+<body>
+    <h2>Kategori: {{ category.name }}</h2>
+    <a href="{% url 'forum:topic_create' %}">Buat Topik Baru</a>
+    <ul>
+        {% for topic in topics %}
+            <li>
+                <a href="{% url 'forum:topic_detail' topic.id %}">{{ topic.title }}</a>
+                oleh {{ topic.created_by.username }} pada {{ topic.created_at|date:"d M Y" }}
+            </li>
+        {% empty %}
+            <li>Tidak ada topik dalam kategori ini.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      {% if topics.has_previous %}
+        <a href="?page={{ topics.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      <span>Page {{ topics.number }} of {{ topics.paginator.num_pages }}</span>
+
+      {% if topics.has_next %}
+        <a href="?page={{ topics.next_page_number }}">Next</a>
+      {% endif %}
+    </div>
+</body>
+</html>

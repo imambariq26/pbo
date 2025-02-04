@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profil {{ user_profile.username }}</title>
+</head>
+<body>
+    <h2>Profil: {{ user_profile.username }}</h2>
+    {% if user_profile.profile.avatar %}
+        <img src="{{ user_profile.profile.avatar.url }}" alt="Avatar" width="150">
+    {% endif %}
+    <p>Bio: {{ user_profile.profile.bio }}</p>
+
+    <h3>Topik yang Dibuat</h3>
+    <ul>
+      {% for topic in topics %}
+          <li><a href="{% url 'forum:topic_detail' topic.id %}">{{ topic.title }}</a></li>
+      {% empty %}
+          <li>Tidak ada topik.</li>
+      {% endfor %}
+    </ul>
+
+    <h3>Komentar</h3>
+    <ul>
+      {% for comment in comments %}
+          <li>{{ comment.content }} pada topik <a href="{% url 'forum:topic_detail' comment.topic.id %}">{{ comment.topic.title }}</a></li>
+      {% empty %}
+          <li>Tidak ada komentar.</li>
+      {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Forum Komunitas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            padding-top: 70px;
+            background-color: #f8f9fa;
+        }
+        .dashboard-header {
+            background: linear-gradient(135deg, #007bff, #6610f2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .card {
+            transition: 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .navbar {
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">Forum Komunitas</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:profile' user.id %}"><i class="fas fa-user"></i> Profil</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:notifications' %}"><i class="fas fa-bell"></i> Notifikasi</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'forum:search_topics' %}?q="><i class="fas fa-search"></i> Cari</a></li>
+                        {% if user.is_staff %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'forum:reports_dashboard' %}"><i class="fas fa-tools"></i> Moderator</a></li>
+                        {% endif %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="dashboard-header text-center">
+            <h1>Selamat Datang, {{ user.username }}</h1>
+            <p>Kelola forum komunitas dan terlibat dalam diskusi menarik!</p>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-list"></i> Daftar Kategori</h5>
+                        <p class="card-text">Jelajahi berbagai kategori diskusi.</p>
+                        <a href="{% url 'forum:category_list' %}" class="btn btn-primary">Lihat Kategori</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-comment"></i> Topik Terbaru</h5>
+                        <p class="card-text">Ikuti diskusi terbaru.</p>
+                        <a href="{% url 'forum:search_topics' %}?q=" class="btn btn-success">Lihat Topik</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-plus"></i> Buat Topik Baru</h5>
+                        <p class="card-text">Mulai diskusi yang menarik.</p>
+                        <a href="{% url 'forum:topic_create' %}" class="btn btn-warning">Buat Topik</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5">
+            <h3>Ringkasan Aktivitas</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Topik Terbaru</h5>
+                    <ul class="list-group">
+                        {% for topic in recent_topics %}
+                            <li class="list-group-item">
+                                <a href="{% url 'forum:topic_detail' topic.id %}">{{ topic.title }}</a>
+                                <small class="d-block text-muted">oleh {{ topic.created_by.username }} pada {{ topic.created_at|date:"d M Y H:i" }}</small>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">Tidak ada topik terbaru.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Komentar Terbaru</h5>
+                    <ul class="list-group">
+                        {% for comment in recent_comments %}
+                            <li class="list-group-item">
+                                <a href="{% url 'forum:topic_detail' comment.topic.id %}">Lihat komentar</a> pada <strong>{{ comment.topic.title }}</strong>
+                                <small class="d-block text-muted">oleh {{ comment.created_by.username }} pada {{ comment.created_at|date:"d M Y H:i" }}</small>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">Tidak ada komentar terbaru.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

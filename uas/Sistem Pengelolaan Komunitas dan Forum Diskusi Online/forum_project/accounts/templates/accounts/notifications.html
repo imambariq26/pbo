@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notifikasi</title>
+</head>
+<body>
+    <h2>Notifikasi untuk {{ request.user.username }}</h2>
+    <ul>
+        {% for notif in notifications %}
+            <li {% if not notif.is_read %}style="font-weight: bold;"{% endif %}>
+                <a href="{{ notif.url }}">{{ notif.message }}</a>
+                <small>{{ notif.created_at|naturaltime }}</small>
+            </li>
+        {% empty %}
+            <li>Tidak ada notifikasi.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

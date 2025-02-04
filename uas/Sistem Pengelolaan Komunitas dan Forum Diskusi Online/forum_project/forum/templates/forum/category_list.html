@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kategori Forum</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <div class="max-w-3xl mx-auto p-6">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold text-gray-800">Daftar Kategori</h2>
+            <ul class="mt-4 space-y-3">
+                {% for category in categories %}
+                    <li>
+                        <a href="{% url 'forum:topic_list' category.id %}" class="block bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">
+                            {{ category.name }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <li class="text-gray-500">Tidak ada kategori.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

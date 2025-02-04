@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Laporan</title>
+</head>
+<body>
+    <h2>Laporan Konten</h2>
+    <ul>
+        {% for report in reports %}
+            <li>
+                {{ report.report_type|title }} dilaporkan oleh {{ report.reported_by.username }} pada {{ report.created_at|date:"d M Y H:i" }}
+                <p>Alasan: {{ report.reason }}</p>
+                <!-- Tautan untuk menyelesaikan laporan atau mengambil tindakan -->
+                <a href="{% url 'forum:resolve_report' report.id %}">Tandai Selesai</a>
+            </li>
+        {% empty %}
+            <li>Tidak ada laporan baru.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
